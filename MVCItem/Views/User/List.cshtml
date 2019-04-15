@@ -1,0 +1,85 @@
+﻿@model IEnumerable<MVCItem.Models.ApplicationUser>
+@using MVCItem.Models
+@using MVCItem
+@using Microsoft.AspNet.Identity;
+@using Microsoft.AspNet.Identity.EntityFramework;
+@using Microsoft.AspNet.Identity.Owin;
+@{
+    ViewBag.Title = "List";
+}
+
+<div style="text-align:center"><h2>用户管理</h2></div>
+<div class="form-group">
+    <a href="/User/Add" class="btn btn-primary">
+        添加
+        <span class="glyphicon glyphicon-user"></span>
+    </a>
+    <button id="btnEdit" type="button" class="btn btn-info " onclick="editModel()">
+        <span class="glyphicon glyphicon-pencil"></span> 编辑
+    </button>
+    <button id="btnDel" type="button" class="btn btn-danger " onclick="delData()">
+        <span class="glyphicon glyphicon-remove"></span>
+        删除
+    </button>
+    <button id="btnSetRole" type="button" class="btn btn-info ">
+        <i class="fa fa-user"></i> 角色授权
+    </button>
+    <button id="btnResetPwd" class="btn btn-warning">
+        重置密码
+        <span class="glyphicon glyphicon-repeat"></span>
+    </button>
+    <button id="btnResetPwd" class="btn btn-warning" onclick="addRole()" >
+        添加角色
+        <span class="glyphicon glyphicon-repeat"></span>
+    </button>
+</div>
+<div class="form-group">
+    <div class="input-group">
+        <input id="txtSearchKey" style="border-radius:5px 5px;max-width:100%" type="text" class="input  form-control" placeholder="搜索关键字" />
+        <span class="input-group-btn">
+            <button id="btnSearch" class="btn btn btn-primary" type="button">
+                搜索
+                <span class="glyphicon glyphicon-search"></span>
+            </button>
+        </span>
+    </div>
+</div>
+<table class="table table-responsive table-hover">
+    <thead>
+        <tr>
+            <th>用户名</th>
+            <th>电子邮件</th>
+            <th>用户角色</th>
+            <th>操作</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            var roles = "";
+            foreach (var role in user.Roles)
+            {
+                var manager = this.Context.GetOwinContext().Get<ApplicationRoleManger>();
+                var roleName =  manager.FindById(role.RoleId);
+                roles += roleName.Name;
+
+
+            }
+            <tr>
+                <td>@Html.DisplayFor(m => user.UserName)</td>
+                <td>@Html.DisplayFor(m => user.Email)</td>
+                <td>@Html.DisplayFor(m => roles)</td>
+                <td>
+                    @Html.ActionLink("编辑", "Edit", new { id = user.Id }, new { @class = "btn btn-info" })
+                    @Html.ActionLink("删除", "Del", new { id = user.Id }, new { @class = "btn btn-danger" })
+                </td>
+
+            </tr>
+
+
+        }
+
+    </tbody>
+
+</table>

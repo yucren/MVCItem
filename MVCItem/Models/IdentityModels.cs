@@ -3,9 +3,33 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 
 namespace MVCItem.Models
 {
+    public class ApplicationRole : IdentityRole
+    {
+       
+        /// <summary>
+        /// 角色描述
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreateTime { get; set; }
+
+        public ApplicationRole()
+        {
+            this.Id = Guid.NewGuid().ToString("N");
+        }
+
+
+
+    }
+
+
     // 可以通过将更多属性添加到 ApplicationUser 类来为用户添加配置文件数据，请访问 https://go.microsoft.com/fwlink/?LinkID=317594 了解详细信息。
     public class ApplicationUser : IdentityUser
     {

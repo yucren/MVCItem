@@ -215,6 +215,8 @@ namespace MVCItem.Controllers
 
         //
         // GET: /Manage/ChangePassword
+        [Authorize(Roles = "Administrators")]
+        
         public ActionResult ChangePassword()
         {
             return View();

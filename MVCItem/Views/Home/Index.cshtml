@@ -2,6 +2,13 @@
     ViewBag.Title = "Home Page";
 }
 
+<div>
+    @{ 
+        string message = "1+2=@(1+2)";
+    }
+    <span>@Html.Raw(message)</span>
+</div>
+
 <div class="jumbotron">
     <h1>ASP.NET</h1>
     <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
@@ -10,13 +17,14 @@
 
 <div class="row">
     <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+        @using (Html.BeginForm("About", "Home", FormMethod.Get, new { @class = "good" }))
+        {
+        <input type="text" name="q" value="" />
+        <input type="submit" name="submit" value="Search" />
+
+        }
+        @Html.TextArea("myTextArea","yuchengren is a goodman",new { rows=10,cols=20 })
+
     </div>
     <div class="col-md-4">
         <h2>Get more libraries</h2>

@@ -1,0 +1,619 @@
+﻿
+@{
+    ViewBag.Title = "Purchases";
+}
+<script src="~/Scripts/datagrid-detailview.js"></script>
+<div id="purchase">
+
+</div>
+<div id="tb" style="padding:5px;padding-left:20px;background-color:aquamarine">
+    <button type="button" class="btn btn-default">
+        <span class="glyphicon glyphicon-edit"></span>
+    </button>
+    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addPurModel"  onclick="action.add()">
+        <span class="glyphicon glyphicon-plus"></span>
+    </button>
+</div>
+    
+<div class="modal fade" id="addPurModel" data-backdrop="false"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">采购订单新增</h4>
+            </div>
+            <div id="mymodal" class="modal-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <button type="button" class="btn btn-default" onclick="getValue()">
+                            保存
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </button>
+                        <button type="button" class="btn btn-default" onclick="action.addLine()">
+                            插入行
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </button>
+                        <button type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </button>
+                        <button type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </button>
+                        <button type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </button>
+                        <div>
+
+
+                            <form style="padding-top:10px" class="form-inline" role="form">
+                                <div id="mygood" style="background-color:burlywood;">
+                                    <div class="form-group">
+                                        <label class="control-label">采购类型:</label>
+
+                                        <select class="form-control" style="width:200px">
+                                            <option value="volvo">Volvo</option>
+                                            <option value="saab">Saab</option>
+                                            <option value="opel">Opel</option>
+                                            <option value="audi">Audi</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">采购单号:</label>
+                                        <input style="width:200px" type="text" class="form-control" name="name" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">&ensp;&ensp;&ensp;&ensp;部门:</label>
+                                        <input style="width:200px" type="text" class="form-control" name="name" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">&ensp;&ensp;供应商:</label>
+                                        <input style="width:200px" type="text" class="form-control" name="name" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">&ensp;&ensp;采购员:</label>
+                                        <input style="width:200px" type="text" class="form-control" name="name" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">采购日期:</label>
+                                        <input style="width:200px" type="date" class="form-control" name="name" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">&ensp;&ensp;&ensp;&ensp;交期:</label>
+                                        <input style="width:200px" type="date" class="form-control" name="name" value="" />
+                                    </div>
+                                </div>
+
+
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="panel-body">
+                       
+                        <div  >
+                  <table id="mytable" class="table table-bordered table-hover" >
+                                        <caption  style="background-color:chartreuse"><strong>订单行明细</strong></caption>
+                                        <thead>
+                                            <tr>
+                                                <th>行号</th>
+                                                <th>名称</th>
+                                                <th>城市</th>
+                                                <th>邮编</th>
+                                                <th>名称</th>
+                                                <th>城市</th>
+                                                <th>邮编</th>
+                                                <th>名称</th>
+                                                <th>城市</th>
+                                                <th>邮编</th>
+                                                <th>名称</th>
+                                                <th>城市</th>
+                                                <th>邮编</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                
+
+
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+
+                                </div>
+
+                  
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="action.addContent('#mymodal')">提交更改</button>
+            </div>
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+<script>
+    var action = {
+
+        add: function (modalName) {
+        
+
+             
+
+
+
+
+
+        },
+        addContent: function (idName) {
+
+            $(idName).load("http://www.qq.com");
+
+        },
+        addLine: function () {
+
+            $('#mytable >tbody').append(
+                " <tr contenteditable='true'>< td ></td ><td></td> <td></td><td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td>  <td></td> <td></td> <td></td> <td></td></tr >");
+
+        },
+
+
+
+    }
+
+
+</script>
+<script>
+    var position = 0;
+    var oldIndex = undefined;
+    $(function () {
+        $('#purchase').datagrid({
+           // title: '详细数据表格',
+            width: 500,
+            height: 500,
+            toolbar:'#tb',
+            fit: true,
+            fitColumns: true,
+            url: '/PurchaseOrderHeaders/Purchase',
+            pagination: true,
+            rownumbers: true,
+            singleSelect: true,
+            view: detailview,
+            detailFormatter: function (index, row) {//严重注意喔
+                return '<div><table  id="ddv-' + index + '" ></table></div>';
+
+             //   return '<div style="padding:2px;margin:0;" id="ddv-' + index + '" style="width:auto;"></div>';
+
+            },
+
+
+            columns: [[
+                {
+                    field: 'PurchaseOrderID',
+                    title: 'PurchaseOrderID',
+                 //   checkbox: true,
+                    width: 100,
+                },
+
+                {
+                    field: 'ShipDate',
+                    title: 'ShipDate',
+                    width: 100,
+                },
+                {
+                    field: 'SubTotal',
+                    title: 'SubTotal',
+                    width: 100,
+                },
+
+                {
+                    field: 'TaxAmt',
+                    title: 'TaxAmt',
+                    width: 100,
+                },
+                {
+                    field: 'Freight',
+                    title: 'Freight',
+                    width: 100,
+                },
+                {
+                    field: 'TotalDue',
+                    title: 'TotalDue',
+                    width: 100,
+                },
+                {
+                    field: 'ModifiedDate',
+                    title: 'ModifiedDate',
+                    width: 100,
+                },
+
+
+            ]],
+            onClickRow: function (index, field, value) {
+
+                position = $('.datagrid-body').scrollTop();
+                //console.log(position);
+                //console.log("hello");
+            },
+            onExpandRow: function (index, row) {//嵌套第一层，严重注意喔
+               // position = $('.datagrid-body').scrollTop();
+             //   console.log(position);
+                if (oldIndex !=undefined) {
+                    $(this).datagrid('collapseRow', oldIndex);
+                }
+
+                var ddv = $(this).datagrid('getRowDetail', index).find('#ddv-' + index);//严重注意喔
+                ddv.datagrid({
+                    url: '@Url.Action("GetDetail", "PurchaserOrderDetail")',
+                    autoRowHeight: true,
+                    queryParams: {
+                        PurchaseOrderID: row.PurchaseOrderID ,
+
+                     },
+                    fitColumns: true,//改变横向滚动条
+                    singleSelect: false,//去掉选中效果
+                    rownumbers: true,
+                    rownumberWidth:50,
+                  //  height: 'auto',
+                    loadMsg: '',
+                    toolbar: '#tb',
+                    //   height:'auto',
+                    columns: [[
+                        {
+                            field: 'PurchaseOrderDetailID',
+                            title: 'PurchaseOrderDetailID',
+                            width: 100,
+                        //    checkbox: true,
+                        },
+                        {
+                            field: 'DueDate',
+                            title: 'DueDate',
+                            width: 100,
+                        },
+                        {
+                            field: 'OrderQty',
+                            title: 'OrderQty',
+                            width: 100,
+                        },
+
+
+                    ]],
+                    onLoadSuccess: function () {
+                      //  $('.datagrid-body').scrollTop(position);
+                        $('#purchase').datagrid('fixDetailRowHeight', index);
+                        $('#purchase').datagrid('fixRowHeight', index);
+
+
+                        //setTimeout(function () {
+
+                        ////    $('#purchase').datagrid('scrollTo', index);
+                        //  $('.datagrid-body').scrollTop(position);
+
+                        //}, 0);
+                        oldIndex = index;
+
+                    },
+                    onResize: function () {
+
+                        $('#purchase').datagrid('fixDetailRowHeight', index);
+                        $('#purchase').datagrid('fixRowHeight', index);
+                      //  $('.datagrid-body').scrollTop(position);
+                      //  $('#purchase').datagrid('scrollTo', index);
+                    },
+
+
+
+
+
+
+                },
+
+                    );
+              //  $('#dg').datagrid('fixDetailRowHeight', index);
+            }
+        });
+    });
+    function getScrollTop() {
+
+        　　　　　　var scrollTop = document.body.scrollTop || window.pageYOffset || document.body.scrollTop;
+
+        　　　　　　return scrollTop;
+
+    　　　　}
+</script>
+ <script>
+     $(function () {
+         $('#addPurModel').on('shown.bs.modal', function () {
+             $('#mytable tr td:gt(0)').attr('contenteditable', "true");
+         })
+     })
+     function getValue() {
+
+         var a = document.getElementById('mytable').getElementsByTagName("tr")
+         for (var i = 1; i < a.length; i++) {
+
+             console.log(a[i].innerHTML);
+         }
+       
+         
+
+
+
+
+     }
+ </script>
+<style>
+   #mytable ,td,tr{
+        border:1px solid black;
+        /*padding:0;
+        width:100px;*/
+      
+    }
+
+  
+   
+    #mytable {
+        width: 1200px;
+    }
+   #mygood{
+
+
+      
+
+   }
+   #mytable table{
+
+     
+       
+   }
+   #mytable{
+      
+   }
+    #mytable tr td input {
+        width:100%;
+    }
+</style>
+@*<script>
+
+        $('#purchase').datagrid({
+            title: '详细数据表格',
+            width: 500,
+            height: 500,
+
+        }).datagrid('subgrid', {
+            options: {
+                fit:true,
+                fitColumns: true,
+                url: '/PurchaseOrderHeaders/Purchase',
+                pagination: true,
+                rownumbers: true,
+                view: detailview,
+                detailFormatter: function (index, row) {//严重注意喔
+                    return '<div"><table id="ddv-' + index + '" ></table></div>';
+                },
+                columns: [[
+                    {
+                        field: 'PurchaseOrderID',
+                        title: 'PurchaseOrderID',
+                        checkbox: true,
+                        width: 100,
+                    },
+
+                    {
+                        field: 'ShipDate',
+                        title: 'ShipDate',
+                        width: 100,
+                    },
+                    {
+                        field: 'SubTotal',
+                        title: 'SubTotal',
+                        width: 100,
+                    },
+
+                    {
+                        field: 'TaxAmt',
+                        title: 'TaxAmt',
+                        width: 100,
+                    },
+                    {
+                        field: 'Freight',
+                        title: 'Freight',
+                        width: 100,
+                    },
+                    {
+                        field: 'TotalDue',
+                        title: 'TotalDue',
+                        width: 100,
+                    },
+                    {
+                        field: 'ModifiedDate',
+                        title: 'ModifiedDate',
+                        width: 100,
+                    },
+
+
+                ]],
+
+            }
+            , subgrid: {
+
+                options: {
+                    foreignField: 'PurchaseOrderID',
+                    fitColumns: true,
+                    heiht:500,
+                    url: '@Url.Action("GetDetail", "PurchaserOrderDetail")' ,
+                    columns: [[
+                        {
+                            field: 'PurchaseOrderDetailID',
+                            title: 'PurchaseOrderDetailID',
+                            width: 100,
+                        },
+                        {
+                            field: 'DueDate',
+                            title: 'DueDate',
+                            width: 100,
+                        },
+                        {
+                            field: 'OrderQty',
+                            title: 'OrderQty',
+                            width: 100,
+                        },
+
+
+                    ]],
+                    onLoadSuccess: function (data) {
+
+                    },
+
+
+
+
+                },
+
+
+            }
+        });
+
+        //$('#purchase').datagrid({
+        //    fit: true,
+        //    url: '/PurchaseOrderHeaders/Purchase',
+
+        //    pagination: true,
+        //    rownumbers: true,
+        //    columns: [[
+        //        {
+        //            field: 'PurchaseOrderID',
+        //            title: 'PurchaseOrderID',
+        //            checkbox: true,
+        //            width: 100,
+        //        },
+
+        //        {
+        //            field: 'ShipDate',
+        //            title: 'ShipDate',
+        //            width: 100,
+        //        },
+        //        {
+        //            field: 'SubTotal',
+        //            title: 'SubTotal',
+        //            width: 100,
+        //        },
+
+        //        {
+        //            field: 'TaxAmt',
+        //            title: 'TaxAmt',
+        //            width: 100,
+        //        },
+        //        {
+        //            field: 'Freight',
+        //            title: 'Freight',
+        //            width: 100,
+        //        },
+        //        {
+        //            field: 'TotalDue',
+        //            title: 'TotalDue',
+        //            width: 100,
+        //        },
+        //        {
+        //            field: 'ModifiedDate',
+        //            title: 'ModifiedDate',
+        //            width: 100,
+        //        },
+
+
+        //    ]]
+
+
+        //})
+
+
+    </script>*@
+

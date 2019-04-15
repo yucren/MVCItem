@@ -36,6 +36,8 @@ namespace MVCItem.Models
         [Display(Name = "记住此浏览器?")]
         public bool RememberBrowser { get; set; }
 
+        
+
         public bool RememberMe { get; set; }
     }
 
@@ -60,6 +62,15 @@ namespace MVCItem.Models
 
         [Display(Name = "记住我?")]
         public bool RememberMe { get; set; }
+        [Required]
+        [Display(Name = "验证码")]
+
+        public string ValiDataNum { get; set; }
+
+        [Required]
+        [Display(Name = "验证码")]
+        [Compare("ValiDataNum",ErrorMessage ="验证码不对,请重新获取")]
+        public string ValidataNumComfirm { get; set; }
     }
 
     public class RegisterViewModel

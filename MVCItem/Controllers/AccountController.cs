@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -9,6 +11,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using MVCItem.Models;
+using MVCItem.Tools;
 
 namespace MVCItem.Controllers
 {
@@ -17,15 +20,43 @@ namespace MVCItem.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-
+        private ApplicationRoleManger _roleManger;
         public AccountController()
         {
+          
+        }
+        [AllowAnonymous]
+        public FileContentResult ValidateResult ()
+        {
+            
+         var result =    AspnetTools.CreateImage(Session["validataNum"].ToString());
+
+            return new FileContentResult(result, "image/Gif");
+
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
         {
             UserManager = userManager;
             SignInManager = signInManager;
+        }
+        public ApplicationRoleManger RoleManger
+        {
+            get
+            {
+
+                return _roleManger ?? HttpContext.GetOwinContext().Get<ApplicationRoleManger>();
+
+            }
+            set
+
+            {
+                _roleManger = value;
+
+            }
+
+
+
         }
 
         public ApplicationSignInManager SignInManager
@@ -55,10 +86,28 @@ namespace MVCItem.Controllers
         //
         // GET: /Account/Login
         [AllowAnonymous]
+        [CustomAction]
         public ActionResult Login(string returnUrl)
         {
-            ViewBag.ReturnUrl = returnUrl;
-            return View();
+            if (User.Identity.IsAuthenticated)
+            {
+              //  Response.Write("<script>alert('您已登陆')</script>");
+              //   Response.Flush();
+              //  System.Threading.Thread.Sleep(1000);
+               return  this.Content("<script>alert('你已登陆,即将为你跳转到首页');window.location.assign('"+ Url.Action("index", "Home") + "')</script>");
+
+               
+                //return RedirectToAction("index","Home");
+            }
+            else
+            {
+                
+                Session["validataNum"] = AspnetTools.CreateRandomNum(5);
+                ViewBag.ReturnUrl = returnUrl;
+                MVCItem.Models.LoginViewModel loginViewModel = new LoginViewModel() { ValiDataNum= Session["validataNum"].ToString() };
+                return View(loginViewModel);
+            }
+
         }
 
         //
@@ -66,29 +115,80 @@ namespace MVCItem.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [CustomAction]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
-            if (!ModelState.IsValid)
+            ViewBag.ReturnUrl = returnUrl;
+            try
             {
-                return View(model);
-            }
+                
+                if (!ModelState.IsValid)
+                {
 
-            // 这不会计入到为执行帐户锁定而统计的登录失败次数中
-            // 若要在多次输入错误密码的情况下触发帐户锁定，请更改为 shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-            switch (result)
-            {
-                case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "无效的登录尝试。");
+
                     return View(model);
+                }
+
+
+                // 这不会计入到为执行帐户锁定而统计的登录失败次数中
+                // 若要在多次输入错误密码的情况下触发帐户锁定，请更改为 shouldLockout: true
+
+                //var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+                var user = await UserManager.FindAsync(model.Email, model.Password);
+                
+                if (user != null)
+                {
+                    var result = await SignInManager.SignInAsync(Response, user, false, false);
+                    switch (result)
+                    {
+                        case SignInStatus.Success:
+                            //   ModelState.AddModelError("", "请验证你2222的邮箱。");
+                            return Redirect(returnUrl);
+                        // return View(model);
+
+                        case SignInStatus.LockedOut:
+                            return View("Lockout");
+                        case SignInStatus.RequiresVerification:
+                            return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                        case SignInStatus.Failure:
+
+                            return View(model);
+
+                        default:
+
+                            return View(model);
+                    }
+                }
+                else
+                {                
+                   
+
+                    
+                    return View(model);
+                }
             }
+            catch (Exception)
+            {
+              
+                   return View(model);
+
+            }
+            finally
+            {
+                Session["validataNum"] = AspnetTools.CreateRandomNum(5);
+                ModelState.Clear();
+                ModelState.AddModelError("", "无效的登录尝试。");
+                model.ValiDataNum = Session["validataNum"].ToString();
+                var email = model.Email;
+                model.Email = model.Email;
+                
+
+
+            }
+           
+
+
+           
         }
 
         //
@@ -141,6 +241,75 @@ namespace MVCItem.Controllers
         {
             return View();
         }
+       
+        public class EmailService : IIdentityMessageService
+        {
+            private AccountController accountController;
+            public EmailService(AccountController accountController)
+            {
+                this.accountController = accountController;
+            }
+
+            public  Task  SendAsync(IdentityMessage message)
+            {
+
+                SmtpClient smtpClient = new SmtpClient("smtp.139.com");
+                smtpClient.UseDefaultCredentials = false;
+                smtpClient.Credentials = new NetworkCredential()
+                {
+                    UserName = "18721600247@139.com",
+                    Password = "ycr111450"
+                };
+
+                MailMessage mailMessage = new MailMessage();
+                mailMessage.Body = message.Body;
+                mailMessage.IsBodyHtml = true;
+                mailMessage.Subject = message.Subject;
+                mailMessage.Sender = new MailAddress("18721600247@139.com", "yuchengren");
+                //  mailMessage.ReplyTo = new MailAddress("18721600247@139.com");
+                mailMessage.ReplyToList.Add(new MailAddress("18721600247@139.com"));
+                mailMessage.ReplyToList.Add(new MailAddress("928184371@139.com"));
+                mailMessage.To.Add(message.Destination);
+                mailMessage.From = new MailAddress("18721600247@139.com");
+                //   smtpClient.SendCompleted += SmtpClient_SendCompleted;    
+                try
+                {
+                    smtpClient.Send(mailMessage);
+                 
+                 //   accountController.RedirectToAction("DisplayEmail", "已成功发送邮件");
+                }
+                catch (Exception)
+                {
+                    
+
+                }
+                 
+                
+
+               
+                // 在此处插入电子邮件服务可发送电子邮件。
+                return Task.FromResult(0);
+            }
+
+            private void SmtpClient_SendCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+            {
+               
+
+
+
+
+
+            }
+        }
+
+        [AllowAnonymous]
+        public ActionResult DisplayEmail(string result)
+        {
+            ViewBag.result = "已发送成功,请到邮箱登陆才能登陆";
+
+            return View();
+
+        }
 
         //
         // POST: /Account/Register
@@ -149,27 +318,42 @@ namespace MVCItem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            
             if (ModelState.IsValid)
             {
+                
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                  //  await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+
                     // 有关如何启用帐户确认和密码重置的详细信息，请访问 https://go.microsoft.com/fwlink/?LinkID=320771
                     // 发送包含此链接的电子邮件
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "确认你的帐户", "请通过单击 <a href=\"" + callbackUrl + "\">這裏</a>来确认你的帐户");
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    UserManager.EmailService = new EmailService(this);
+                    ApplicationRole applicationRole = new ApplicationRole()
+                    {
+                        CreateTime = DateTime.Now,
+                         Description="Manager",
+                          Name="Administrators"      
+                    };
+                    
+                    await RoleManger.CreateAsync(applicationRole);
+                   await UserManager.AddToRoleAsync(user.Id, applicationRole.Name);
 
-                    return RedirectToAction("Index", "Home");
+                    await UserManager.SendEmailAsync(user.Id, "确认你的帐户", "请通过单击 <a href=\"" + callbackUrl + "\">这里</a>来确认你的帐户");
+
+                   return  RedirectToAction("DisplayEmail", "Account",new { result ="hellworld"  });
+
                 }
                 AddErrors(result);
             }
 
             // 如果我们进行到这一步时某个地方出错，则重新显示表单
-            return View(model);
+                return View(model);
+          
         }
 
         //
@@ -333,7 +517,7 @@ namespace MVCItem.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToAction("Index", "Home");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
